@@ -1,0 +1,165 @@
+<?php
+/**
+ * Created by Netivo for Elazienki Theme v2
+ * User: manveru
+ * Date: 25.09.2024
+ * Time: 16:20
+ *
+ */
+if ( ! defined( 'ABSPATH' ) ) {
+	header( 'HTTP/1.0 403 Forbidden' );
+	exit;
+}
+
+if ( ! empty( $_GET['nt_cat'] ) ) {
+
+	$attribute_array      = array();
+	$attribute_taxonomies = wc_get_attribute_taxonomies();
+
+	if ( ! empty( $attribute_taxonomies ) ) {
+		foreach ( $attribute_taxonomies as $tax ) {
+			if ( taxonomy_exists( wc_attribute_taxonomy_name( $tax->attribute_name ) ) ) {
+				$attribute_array[ $tax->attribute_name ] = $tax->attribute_label;
+			}
+		}
+	}
+
+	$category = get_term( $_GET['nt_cat'] );
+	if ( empty( $category ) ) {
+		$red_link = add_query_arg( array(
+			'page'      => 'nt_filters',
+			'post_type' => 'product'
+		), admin_url( 'edit.php' ) );
+		wp_redirect( $red_link );
+	}
+	$edit = true;
+
+} else {
+	$categories = get_terms( array(
+		'taxonomy'   => 'product_cat',
+		'hide_empty' => false,
+		'parent'     => 0,
+		'exclude'    => array( 15 )
+	) );
+	asort( $categories );
+
+	$edit = false;
+
+}
+?>
+
+<p>Filtry — ustawienia filtrów dla danych kategorii</p>
+
+<form method="post">
+    <div class="content grid">
+		<?php if ( $edit ) : ?>
+            <div class="grid__row">
+                <div class="grid__col grid__col--100"><h3><?php echo $category->name; ?></h3></div>
+            </div>
+            <div class="grid__row">
+				<?php foreach ( $attribute_array as $option_key => $option_value ) : ?>
+                    <div class="grid__col grid__col--25">
+                        <label><input type="checkbox" name="filters[<?php echo $category->term_id; ?>][]"
+                                      value="<?php echo $option_key; ?>"
+								<?php echo( is_array( $filters ) && array_key_exists( $category->term_id, $filters ) && is_array( $filters[ $category->term_id ] ) && ( in_array( $option_key, $filters[ $category->term_id ] ) ) ? 'checked' : '' ); ?>/><?php echo $option_value; ?>
+                        </label>
+                    </div>
+				<?php endforeach; ?>
+            </div>
+            <div class="grid__row">
+                <div class="grid__col grid__col--100">
+                    <div class="save-section">
+                        <input type="submit" class="btn btn--no-margin" name="save_nt_filters" value="Zapisz"/>
+                    </div>
+                </div>
+            </div>
+		<?php else : ?>
+			<?php foreach ( $categories as $category ): ?>
+                <div class="grid__row">
+                    <div class="grid__col grid__col--100"><h3><?php echo $category->name; ?></h3></div>
+                </div>
+                <div class="grid__row">
+                    <div class="grid__col grid__col--100">
+						<?php $link = add_query_arg( array(
+							'page'      => 'nt_filters',
+							'post_type' => 'product',
+							'nt_cat'    => $category->term_id
+						), admin_url( 'edit.php' ) ); ?>
+						<?php if ( is_array( $filters ) && array_key_exists( $category->term_id, $filters ) ) : ?>
+                            <p>Wybrane filtry: <?= implode( ', ', $filters[ $category->term_id ] ); ?></p>
+						<?php else : ?>
+                            <p>Brak wybranych filtrów</p>
+						<?php endif; ?>
+                        <a href="<?= $link ?>" class="btn">Edytuj</a>
+                    </div>
+                </div>
+				<?php $subcategories = get_terms( array(
+					'taxonomy'   => 'product_cat',
+					'hide_empty' => false,
+					'parent'     => $category->term_id
+				) ); ?>
+				<?php if ( ! empty( $subcategories ) ): ?>
+					<?php asort( $subcategories ); ?>
+					<?php foreach ( $subcategories as $subcategory ): ?>
+                        <div class="grid" style="margin-bottom: 30px;">
+                            <div class="grid__row">
+                                <div class="grid__col grid__col--100"><b><?php echo $category->name; ?>
+                                        / <?php echo $subcategory->name; ?></b></div>
+                            </div>
+                            <div class="grid__row">
+                                <div class="grid__col grid__col--100">
+									<?php $link = add_query_arg( array(
+										'page'      => 'nt_filters',
+										'post_type' => 'product',
+										'nt_cat'    => $subcategory->term_id
+									), admin_url( 'edit.php' ) ); ?>
+									<?php if ( is_array( $filters ) && array_key_exists( $subcategory->term_id, $filters ) ) : ?>
+                                        <p>Wybrane
+                                            filtry: <?= implode( ', ', $filters[ $subcategory->term_id ] ); ?></p>
+									<?php else : ?>
+                                        <p>Brak wybranych filtrów</p>
+									<?php endif; ?>
+                                    <a href="<?= $link ?>" class="btn">Edytuj</a>
+                                </div>
+                            </div>
+                        </div>
+						<?php $sub_subcategories = get_terms( array(
+							'taxonomy'   => 'product_cat',
+							'hide_empty' => false,
+							'parent'     => $subcategory->term_id
+						) ); ?>
+						<?php if ( ! empty( $sub_subcategories ) ): ?>
+							<?php asort( $sub_subcategories ); ?>
+							<?php foreach ( $sub_subcategories as $sub_subcategory ): ?>
+                                <div class="grid" style="margin-bottom: 30px;">
+                                    <div class="grid__row">
+                                        <div class="grid__col grid__col--100"><b><?php echo $category->name; ?>
+                                                / <?php echo $subcategory->name; ?>
+                                                / <?php echo $sub_subcategory->name; ?></b></div>
+                                    </div>
+                                    <div class="grid__row">
+                                        <div class="grid__col grid__col--100">
+											<?php $link = add_query_arg( array(
+												'page'      => 'nt_filters',
+												'post_type' => 'product',
+												'nt_cat'    => $sub_subcategory->term_id
+											), admin_url( 'edit.php' ) ); ?>
+											<?php if ( is_array( $filters ) && array_key_exists( $sub_subcategory->term_id, $filters ) ) : ?>
+                                                <p>Wybrane
+                                                    filtry: <?= implode( ', ', $filters[ $sub_subcategory->term_id ] ); ?></p>
+											<?php else : ?>
+                                                <p>Brak wybranych filtrów</p>
+											<?php endif; ?>
+                                            <a href="<?= $link ?>" class="btn">Edytuj</a>
+                                        </div>
+                                    </div>
+                                </div>
+							<?php endforeach; ?>
+						<?php endif; ?>
+					<?php endforeach; ?>
+				<?php endif; ?>
+			<?php endforeach; ?>
+		<?php endif; ?>
+    </div>
+</form>
+
