@@ -1,0 +1,187 @@
+@use './../variables/variables' as var;
+
+.netivo-filters {
+  display: flex;
+  flex-direction: column;
+
+  .netivo-filters__section {
+    margin-bottom: var(--wp--preset--spacing--xs);
+
+    .title {
+      font-size: 1.25em;
+      line-height: 1.3;
+      font-weight: 600;
+      margin-top: 0;
+      margin-bottom: var(--wp--preset--spacing--xs);
+    }
+
+    .netivo-filters__section-content {
+
+      .netivo-filters__back {
+        font-weight: 400;
+        margin-bottom: var(--wp--preset--spacing--xs);
+
+        a {
+          font-weight: 600;
+        }
+      }
+
+      .netivo-filters__categories {
+        list-style-type: none;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+        gap: 10px;
+
+        .netivo-filters__category {
+
+          .netivo-filters__category-title {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            font-weight: 500;
+            color: var.$color_black;
+
+            .netivo-filters__category-count {
+              font-weight: 400;
+            }
+
+            &::after {
+              margin-left: auto;
+              content: url(images/icons/arrow_right.svg);
+              width: 16px;
+              height: 16px;
+
+            }
+          }
+
+          &.active {
+
+            > .netivo-filters__category-title {
+              color: var.$color_primary;
+
+              &::after {
+                content: url(images/icons/arrow_right_blue.svg);
+              }
+            }
+          }
+
+          &.has-submenu {
+
+            .netivo-filters--subcategories {
+              list-style-type: none;
+              display: none;
+              flex-direction: column;
+              margin-left: var(--wp--preset--spacing--xs);
+              padding: 0;
+              gap: 5px;
+            }
+
+            &.open {
+              border-bottom: 1px solid var.$color_borders;
+
+              > .netivo-filters__category-title {
+                margin-bottom: 10px;
+
+                &::after {
+                  content: url(images/icons/arrow_up.svg);
+                }
+              }
+
+              .netivo-filters--subcategories {
+                display: flex;
+                margin-bottom: 10px;
+              }
+
+              &.active {
+
+                > .netivo-filters__category-title {
+
+                  &::after {
+                    content: url(images/icons/arrow_up_blue.svg);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .netivo-filters__attributes {
+        display: flex;
+        flex-direction: column;
+        gap: var(--wp--preset--spacing--xs);
+
+        .netivo-filters__attribute {
+
+          .netivo-filters__attribute-container {
+            display: flex;
+            flex-direction: column;
+
+            .netivo-filters__term {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              justify-content: flex-start;
+              gap: 5px;
+
+              .netivo-filters__term-name {
+                font-weight: 500;
+
+                .netivo-filters__term-count {
+                  font-weight: 400;
+                }
+              }
+            }
+
+            .netivo-filters__attributes-show-more {
+              margin-top: 5px;
+              font-size: 0.875em;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .netivo-filters__button {
+    padding: 10px 10px;
+    display: flex;
+    font-weight: 700;
+    margin: 0;
+    background: var.$color_primary;
+    color: var.$color_white;
+    border: 1px solid var.$color_primary;
+    border-radius: 10px;
+    transition: 300ms ease-in-out;
+    text-align: center;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    bottom: 10px;
+    z-index: 30;
+    cursor: pointer;
+
+    svg {
+
+      path {
+        transition: 300ms ease-in-out;
+      }
+    }
+
+    &:hover, &:focus {
+      background: var.$color_white;
+      color: var.$color_primary;
+
+      svg {
+
+        path {
+          fill: var.$color_primary;
+        }
+      }
+    }
+  }
+}

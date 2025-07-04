@@ -1,0 +1,131 @@
+.netivo-filters {
+  display: flex;
+  flex-direction: column;
+}
+.netivo-filters .netivo-filters__section {
+  margin-bottom: var(--wp--preset--spacing--xs);
+}
+.netivo-filters .netivo-filters__section .title {
+  font-size: 1.25em;
+  line-height: 1.3;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: var(--wp--preset--spacing--xs);
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__back {
+  font-weight: 400;
+  margin-bottom: var(--wp--preset--spacing--xs);
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__back a {
+  font-weight: 600;
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__categories {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  gap: 10px;
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__categories .netivo-filters__category .netivo-filters__category-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  font-weight: 500;
+  color: #101010;
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__categories .netivo-filters__category .netivo-filters__category-title .netivo-filters__category-count {
+  font-weight: 400;
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__categories .netivo-filters__category .netivo-filters__category-title::after {
+  margin-left: auto;
+  content: url(images/icons/arrow_right.svg);
+  width: 16px;
+  height: 16px;
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__categories .netivo-filters__category.active > .netivo-filters__category-title {
+  color: #662D91;
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__categories .netivo-filters__category.active > .netivo-filters__category-title::after {
+  content: url(images/icons/arrow_right_blue.svg);
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__categories .netivo-filters__category.has-submenu .netivo-filters--subcategories {
+  list-style-type: none;
+  display: none;
+  flex-direction: column;
+  margin-left: var(--wp--preset--spacing--xs);
+  padding: 0;
+  gap: 5px;
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__categories .netivo-filters__category.has-submenu.open {
+  border-bottom: 1px solid rgba(43, 48, 48, 0.2);
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__categories .netivo-filters__category.has-submenu.open > .netivo-filters__category-title {
+  margin-bottom: 10px;
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__categories .netivo-filters__category.has-submenu.open > .netivo-filters__category-title::after {
+  content: url(images/icons/arrow_up.svg);
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__categories .netivo-filters__category.has-submenu.open .netivo-filters--subcategories {
+  display: flex;
+  margin-bottom: 10px;
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__categories .netivo-filters__category.has-submenu.open.active > .netivo-filters__category-title::after {
+  content: url(images/icons/arrow_up_blue.svg);
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__attributes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wp--preset--spacing--xs);
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__attributes .netivo-filters__attribute .netivo-filters__attribute-container {
+  display: flex;
+  flex-direction: column;
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__attributes .netivo-filters__attribute .netivo-filters__attribute-container .netivo-filters__term {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__attributes .netivo-filters__attribute .netivo-filters__attribute-container .netivo-filters__term .netivo-filters__term-name {
+  font-weight: 500;
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__attributes .netivo-filters__attribute .netivo-filters__attribute-container .netivo-filters__term .netivo-filters__term-name .netivo-filters__term-count {
+  font-weight: 400;
+}
+.netivo-filters .netivo-filters__section .netivo-filters__section-content .netivo-filters__attributes .netivo-filters__attribute .netivo-filters__attribute-container .netivo-filters__attributes-show-more {
+  margin-top: 5px;
+  font-size: 0.875em;
+}
+.netivo-filters .netivo-filters__button {
+  padding: 10px 10px;
+  display: flex;
+  font-weight: 700;
+  margin: 0;
+  background: #662D91;
+  color: #fff;
+  border: 1px solid #662D91;
+  border-radius: 10px;
+  transition: 300ms ease-in-out;
+  text-align: center;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  bottom: 10px;
+  z-index: 30;
+  cursor: pointer;
+}
+.netivo-filters .netivo-filters__button svg path {
+  transition: 300ms ease-in-out;
+}
+.netivo-filters .netivo-filters__button:hover, .netivo-filters .netivo-filters__button:focus {
+  background: #fff;
+  color: #662D91;
+}
+.netivo-filters .netivo-filters__button:hover svg path, .netivo-filters .netivo-filters__button:focus svg path {
+  fill: #662D91;
+}/*# sourceMappingURL=netivo-woocommerce-filters.css.map */
