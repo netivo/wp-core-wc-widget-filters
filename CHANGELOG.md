@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.1.1
+
+- Fix for promotion and category filter
+
 ## Version 1.1
 
 - Added templates and styles for filters.

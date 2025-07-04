@@ -154,7 +154,12 @@ class Filters extends WP_Widget {
 		    <?php if(!empty($_GET['s'])) : ?>
                 <input type="hidden" name="s" value="<?= $_GET['s']; ?>"/>
             <?php endif; ?>
-            <button type="submit" class="netivo-filters__button"><?php echo __('Filtruj', 'netivo'); ?></button>
+            <button type="submit" class="netivo-filters__button">
+                <?php echo __('Filtruj', 'netivo'); ?>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11.0001 20C10.7167 20 10.4792 19.9042 10.2876 19.7125C10.0959 19.5208 10.0001 19.2833 10.0001 19V13L4.20008 5.6C3.95008 5.26667 3.91258 4.91667 4.08758 4.55C4.26258 4.18333 4.56675 4 5.00008 4H19.0001C19.4334 4 19.7376 4.18333 19.9126 4.55C20.0876 4.91667 20.0501 5.26667 19.8001 5.6L14.0001 13V19C14.0001 19.2833 13.9042 19.5208 13.7126 19.7125C13.5209 19.9042 13.2834 20 13.0001 20H11.0001ZM12.0001 12.3L16.9501 6H7.05008L12.0001 12.3Z" fill="white"/>
+                </svg>
+            </button>
             </form>
         <?php else : ?>
             </div>
@@ -191,51 +196,74 @@ class Filters extends WP_Widget {
 			$hide = get_term_meta( $category->term_id, '_hide_category', true );
 			if ( empty( $hide ) ) {
 				$count             = $this->get_term_count( $category->term_id );
+                $t_link = get_term_link($category->term_id, 'product_cat');
+                if(is_search()) {
+                    $t_link = add_query_arg('s', get_search_query(), $t_link);
+                }
 				$tmp               = [
 					'id'            => $category->term_id,
 					'count'         => 0,
 					'name'          => $category->name,
 					'active'        => ( ! empty( $current ) && $current->term_id == $category->term_id ),
+					'link' => $t_link,
 					'subcategories' => []
 				];
-				$subcategories     = [];
-				$subcategory_query = new WP_Term_Query( [
-					'taxonomy'   => 'product_cat',
-					'hide_empty' => false,
-					'parent'     => $category->term_id,
-					'pad_counts' => false,
-					'exclude'    => [ get_option( 'default_product_cat' ) ]
-				] );
-				foreach ( $subcategory_query->get_terms() as $subcategory ) {
-					$sub_hide = get_term_meta( $subcategory->term_id, '_hide_category', true );
-					if ( empty( $sub_hide ) ) {
-						$stmp = [
-							'id'    => $subcategory->term_id,
-							'count' => $this->get_term_count( $subcategory->term_id ),
-							'name'  => $subcategory->name,
-						];
-						if ( $stmp['count'] > 0 ) {
-							$subcategories[] = $stmp;
-						}
-					}
-				}
-				$this->get_alternative_tree_for_category( $category, $subcategories, $atr, $atr_val );
-				$tmp['subcategories'] = $subcategories;
+
+                if($current_id === $category->term_id){
+                    $subcategories     = [];
+                    $subcategory_query = new WP_Term_Query( [
+                        'taxonomy'   => 'product_cat',
+                        'hide_empty' => false,
+                        'parent'     => $category->term_id,
+                        'pad_counts' => false,
+                        'exclude'    => [ get_option( 'default_product_cat' ) ]
+                    ] );
+                    foreach ( $subcategory_query->get_terms() as $subcategory ) {
+                        $sub_hide = get_term_meta( $subcategory->term_id, '_hide_category', true );
+                        if ( empty( $sub_hide ) ) {
+                            $st_link = get_term_link($subcategory->term_id, 'product_cat');
+                            if(is_search()) {
+                                $st_link = add_query_arg('s', get_search_query(), $st_link);
+                            }
+                            $stmp = [
+                                'id'    => $subcategory->term_id,
+                                'count' => $this->get_term_count( $subcategory->term_id ),
+                                'name'  => $subcategory->name,
+                                'link'  => $st_link,
+                            ];
+                            if ( $stmp['count'] > 0 ) {
+                                $subcategories[] = $stmp;
+                            }
+                        }
+                    }
+                    $this->get_alternative_tree_for_category( $category, $subcategories, $atr, $atr_val );
+                    $tmp['subcategories'] = $subcategories;
+                }
 				$tmp['count']         = $count;
 				if ( $count > 0 ) {
 					$categories[] = $tmp;
 				}
 			}
 		}
+        $parent_obj = null;
 		if ( ! empty( $parent ) ) {
 			$pt = get_term( $parent );
+            $p_link = get_term_link($parent, 'product_cat');
+            if(is_search()) {
+                $p_link = add_query_arg('s', get_search_query(), $p_link);
+            }
+            $parent_obj = [
+                'id' => $parent,
+                'link' => $p_link,
+                'name' => $pt->name
+            ];
 			$this->get_alternative_tree_for_category( $pt, $categories, $atr, $atr_val );
 		}
 
         $categories = apply_filters( 'netivo/widget/filters/categories', $categories );
 
 		if ( ! empty( $categories ) ) {
-			wc_get_template( 'widget/filters-category.php', [ 'categories' => $categories, 'parent' => $parent ] );
+			wc_get_template( 'widget/filters-category.php', [ 'categories' => $categories, 'parent' => $parent_obj ] );
 		}
 	}
 
@@ -488,8 +516,10 @@ class Filters extends WP_Widget {
 
 		$options = [];
 
+        $active_filters = ! empty( $_GET['filter_promotion'] ) ? explode( ',', wc_clean( wp_unslash( $_GET['filter_promotion'] ) ) ) : array();
+
 		foreach ( $promotions as $key => $value ) {
-			$cf   = ! empty( $_GET['filter_promotion'] ) ? explode( ',', wc_clean( wp_unslash( $_GET['filter_promotion'] ) ) ) : array();
+			$cf   = $active_filters;
 			$link = remove_query_arg( 'filter_promotion', $this->get_current_page_url() );
 
 			$is_set = false;
@@ -519,7 +549,7 @@ class Filters extends WP_Widget {
 			$options[] = $option;
 		}
 
-		wc_get_template( 'widget/filters-promotion.php', [ 'filters' => $options ] );
+		wc_get_template( 'widget/filters-promotion.php', [ 'filters' => $options, 'active_filters' => $active_filters ] );
 	}
 
     public function print_price_filter(): void {
