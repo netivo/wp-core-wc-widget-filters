@@ -16,6 +16,8 @@ class HiddenFilters {
 
       this.showMoreText = this.button.getAttribute("data-show-more-text");
       this.showLessText = this.button.getAttribute("data-show-less-text");
+      this.showMoreAria = this.button.getAttribute("data-show-more-aria");
+      this.showLessAria = this.button.getAttribute("data-show-less-aria");
     }
   }
 
@@ -25,13 +27,22 @@ class HiddenFilters {
       if (!cont.classList.contains("active")) {
         cont.style.display = "flex";
         cont.classList.add("active");
-        this.button.innerText = this.showLessText;
       } else {
         cont.style.display = "none";
         cont.classList.remove("active");
-        this.button.innerText = this.showMoreText;
       }
     });
+    if (!this.button.classList.contains("active")) {
+      this.button.classList.add("active");
+      this.button.innerText = this.showLessText;
+      this.button.setAttribute('aria-label', this.showLessAria);
+      this.container.item(0).parentNode.focus();
+    } else {
+      this.button.classList.remove("active");
+      this.button.setAttribute('aria-label', this.showMoreAria);
+      this.button.innerText = this.showMoreText;
+    }
   }
 }
+
 export default HiddenFilters;

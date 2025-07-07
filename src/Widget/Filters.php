@@ -139,13 +139,13 @@ class Filters extends WP_Widget {
 				<?php $this->print_category_filter(); ?>
 			<?php endif; ?>
 			<?php if ( $show_availability ) : ?>
-				<?php $this->print_availability_filter(); ?>
+				<?php $this->print_availability_filter($form); ?>
 			<?php endif; ?>
 			<?php if ( $show_promotion ) : ?>
-				<?php $this->print_promotion_filter(); ?>
+				<?php $this->print_promotion_filter($form); ?>
 			<?php endif; ?>
 			<?php if ( $show_attributes ) : ?>
-				<?php $this->print_attributes_filter(); ?>
+				<?php $this->print_attributes_filter($form); ?>
 			<?php endif; ?>
 			<?php if ( $show_price ) : ?>
 				<?php $this->print_price_filter(); ?>
@@ -154,7 +154,7 @@ class Filters extends WP_Widget {
 		    <?php if(!empty($_GET['s'])) : ?>
                 <input type="hidden" name="s" value="<?= $_GET['s']; ?>"/>
             <?php endif; ?>
-            <button type="submit" class="netivo-filters__button">
+            <button type="submit" class="netivo-filters__button js-filters-submit">
                 <?php echo __('Filtruj', 'netivo'); ?>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M11.0001 20C10.7167 20 10.4792 19.9042 10.2876 19.7125C10.0959 19.5208 10.0001 19.2833 10.0001 19V13L4.20008 5.6C3.95008 5.26667 3.91258 4.91667 4.08758 4.55C4.26258 4.18333 4.56675 4 5.00008 4H19.0001C19.4334 4 19.7376 4.18333 19.9126 4.55C20.0876 4.91667 20.0501 5.26667 19.8001 5.6L14.0001 13V19C14.0001 19.2833 13.9042 19.5208 13.7126 19.7125C13.5209 19.9042 13.2834 20 13.0001 20H11.0001ZM12.0001 12.3L16.9501 6H7.05008L12.0001 12.3Z" fill="white"/>
@@ -308,7 +308,7 @@ class Filters extends WP_Widget {
         }
 	}
 
-	public function print_attributes_filter(): void {
+	public function print_attributes_filter( $form ): void {
 		$enabled_filters = get_option( '_nt_filters', [] );
 
 		if ( is_product_category() ) {
@@ -346,7 +346,7 @@ class Filters extends WP_Widget {
 				}
 			}
 			if ( ! empty( $final_filters ) ) {
-				wc_get_template( 'widget/filters-attributes.php', [ 'filters' => $final_filters ] );
+				wc_get_template( 'widget/filters-attributes.php', [ 'filters' => $final_filters, 'form' => $form ] );
 			}
 		}
 	}
@@ -385,7 +385,8 @@ class Filters extends WP_Widget {
 
 		arsort( $term_counts );
 
-		$slice = ( count( $current_values ) < 5 ) ? 5 - count( $current_values ) : 3;
+		$slice = 5;
+
 		$maxes = array_slice( $term_counts, 0, $slice, true );
 
 		foreach ( $terms as $term ) {
@@ -462,7 +463,7 @@ class Filters extends WP_Widget {
 		return null;
 	}
 
-	public function print_availability_filter(): void {
+	public function print_availability_filter( $form ): void {
 
 		$availabilities = [
 			'yes' => 'Dostępne',
@@ -504,10 +505,10 @@ class Filters extends WP_Widget {
 
         $options = apply_filters('netivo/widget/filters/availability-options', $options);
 
-		wc_get_template( 'widget/filters-availability.php', [ 'filters' => $options ] );
+		wc_get_template( 'widget/filters-availability.php', [ 'filters' => $options, 'form' => $form ] );
 	}
 
-	public function print_promotion_filter(): void {
+	public function print_promotion_filter( $form ): void {
 
 		$promotions = [
 			'yes' => 'Tak',
@@ -549,7 +550,7 @@ class Filters extends WP_Widget {
 			$options[] = $option;
 		}
 
-		wc_get_template( 'widget/filters-promotion.php', [ 'filters' => $options, 'active_filters' => $active_filters ] );
+		wc_get_template( 'widget/filters-promotion.php', [ 'filters' => $options, 'active_filters' => $active_filters, 'form' => $form ] );
 	}
 
     public function print_price_filter(): void {

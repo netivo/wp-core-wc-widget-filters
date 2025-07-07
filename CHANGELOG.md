@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 1.1.2
+
+- Added WCAG support
+- Added js actions to filters
+
 ## Version 1.1.1
 
 - Fix for promotion and category filter
