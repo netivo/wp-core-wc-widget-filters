@@ -3,15 +3,20 @@
 namespace Netivo\Module\WooCommerce\Filters\Widget;
 
 use Automattic\WooCommerce\Internal\ProductAttributesLookup\Filterer;
-use WC_Query;
+use Netivo\Module\WooCommerce\AlternateCategories\Product;use WC_Query;
 use WP_Meta_Query;
 use WP_Tax_Query;
 use WP_Term_Query;
 use WP_Widget;
 
 class Filters extends WP_Widget {
+
+    protected $is_alternate_category = false;
 	public function __construct() {
 		parent::__construct( 'netivo_filters', 'Netivo - Filtry produktowe', [ 'description' => __( 'Wyświetla widget z możliwością filtrowania produktów.', 'netivo' ) ] );
+        if(class_exists('Netivo\Module\WooCommerce\AlternateCategories\Module')) {
+            $this->is_alternate_category = true;
+        }
 	}
 
 	/**
@@ -107,8 +112,6 @@ class Filters extends WP_Widget {
 		$show_promotion    = in_array( 'promotion', $instance['filters'] );
 		$show_price        = in_array( 'price', $instance['filters'] );
 
-
-
 		if ( ! $show_categories && ! $show_attributes && ! $show_availability && ! $show_promotion && !$show_price ) {
 			return;
 		}
@@ -171,17 +174,10 @@ class Filters extends WP_Widget {
 		$parent     = 0;
 		$current_id = 0;
 		$current    = null;
-		$atr        = '';
-		$atr_val    = '';
 		if ( is_product_category() ) {
 			$current    = get_queried_object();
 			$current_id = $current->term_id;
 			$parent     = $current->parent;
-			$atr        = get_query_var( 'atr' );
-			$atr_val    = get_query_var( 'atr_val' );
-			if ( ! empty( $atr ) && ! empty( $atr_val ) ) {
-				$parent = $current_id;
-			}
 		}
 
 		$category_query = new WP_Term_Query( [
@@ -236,7 +232,6 @@ class Filters extends WP_Widget {
                             }
                         }
                     }
-                    $this->get_alternative_tree_for_category( $category, $subcategories, $atr, $atr_val );
                     $tmp['subcategories'] = $subcategories;
                 }
 				$tmp['count']         = $count;
@@ -257,55 +252,47 @@ class Filters extends WP_Widget {
                 'link' => $p_link,
                 'name' => $pt->name
             ];
-			$this->get_alternative_tree_for_category( $pt, $categories, $atr, $atr_val );
 		}
+
+        if( apply_filters('netivo/widget/filters/alternate-tree', $this->is_alternate_category) ) {
+            $manufacturer = null;
+            if(is_tax('product_brand')){
+                $manufacturer = get_queried_object();
+            } elseif(is_product_category()){
+                $manufacturer = get_query_var('manufacturer');
+                if(!empty($manufacturer)){
+                    $manufacturer = get_term_by('slug', $manufacturer, 'product_brand');
+                }
+            }
+            if(!empty($manufacturer)){
+                foreach($categories as $key => &$category) {
+                    $category['link'] = Product::replace_home_with_manufacturer($category['link'], $manufacturer->slug);
+                    $category['name'] = $category['name'] . ' ' . $manufacturer->name;
+                    if(!empty($category['subcategories'])){
+                        foreach($category['subcategories'] as $subcat_key => &$subcat) {
+                            $subcat['link'] = Product::replace_home_with_manufacturer($subcat['link'], $manufacturer->slug);
+                            $subcat['name'] = $subcat['name'] . ' ' . $manufacturer->name;
+                        }
+                    }
+                }
+                if($parent_obj == null){
+                    $parent_obj = [
+                        'id' => 0,
+                        'link' => get_term_link($manufacturer->term_id, 'product_brand'),
+                        'name' => $manufacturer->name
+                    ];
+                } else {
+                    $parent_obj['link'] = Product::replace_home_with_manufacturer($parent_obj['link'], $manufacturer->slug);
+                    $parent_obj['name'] = $parent_obj['name'] . ' ' . $manufacturer->name;
+                }
+            }
+        }
 
         $categories = apply_filters( 'netivo/widget/filters/categories', $categories );
 
 		if ( ! empty( $categories ) ) {
 			wc_get_template( 'widget/filters-category.php', [ 'categories' => $categories, 'parent' => $parent_obj ] );
 		}
-	}
-
-	public function get_alternative_tree_for_category( $category, &$categories, $atr, $atr_val ): void {
-        $enable_alternate_tree = apply_filters( 'netivo/widget/filters/enable-alternative-tree', true );
-        if($enable_alternate_tree) {
-            $av_atr = get_term_meta( $category->term_id, '_alternative_attributes', true );
-            if ( ! empty( $av_atr ) ) {
-                foreach ( $av_atr as $a => $t ) {
-                    if ( ! empty( $t['values'] ) ) {
-                        foreach ( $t['values'] as $k => $v ) {
-                            $tm = get_term_by( 'slug', $v['slug'], wc_attribute_taxonomy_name( $t['slug'] ) );
-                            if ( ! empty( $tm ) ) {
-                                $count = $this->get_term_count( $category->term_id, $tm->term_id );
-                                if ( $count > 0 ) {
-                                    if ( ! empty( $v['alt_name'] ) ) {
-                                        $name = $v['alt_name'];
-                                    } else {
-                                        $nm   = ( ! empty( $t['name'] ) ) ? $t['name'] : $t['slug'];
-                                        $name = $category->term_name . $nm . ': ' . $v['name'];
-                                    }
-                                    $tmp = [
-                                        'id'          => $category->term_id,
-                                        'alternative' => $t['slug'] . ':' . $v['slug'],
-                                        'count'       => $count,
-                                        'name'        => $name,
-                                        'active'      => false
-
-                                    ];
-                                    if ( ! empty( $atr ) && ! empty( $atr_val ) ) {
-                                        if ( $atr == $t['slug'] && $atr_val == $v['slug'] ) {
-                                            $tmp['active'] = true;
-                                        }
-                                    }
-                                    $categories[] = $tmp;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
 	}
 
 	public function print_attributes_filter( $form ): void {
@@ -606,18 +593,20 @@ class Filters extends WP_Widget {
 		}
 
         $is_man = false;
-		if ( is_product_category() ) {
-			$kpr = get_query_var('kpr');
-			if(!empty($kpr)){
-				$term = get_term_by('slug', $kpr, 'pa_producent');
-				if(!empty($term)){
-					$is_man = true;
-					$man_id = $term->term_id;
-				}
-			}
-		} elseif (is_tax('pa_producent')){
-            $is_man = true;
-            $man_id = get_queried_object_id();
+        if(apply_filters('netivo/widget/filters/alternate-tree', $this->is_alternate_category)){
+            if ( is_product_category() ) {
+                $kpr = get_query_var('manufacturer');
+                if(!empty($kpr)){
+                    $term = get_term_by('slug', $kpr, 'product_brand');
+                    if(!empty($term)){
+                        $is_man = true;
+                        $man_id = $term->term_id;
+                    }
+                }
+            } elseif (is_tax('product_brand')){
+                $is_man = true;
+                $man_id = get_queried_object_id();
+            }
         }
 
 

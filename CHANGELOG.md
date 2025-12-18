@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.2
+
+- Added support for a new alternate category function from Module
+
 ## Version 1.1.2
 
 - Added WCAG support
