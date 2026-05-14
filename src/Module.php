@@ -28,6 +28,8 @@ class Module {
 		add_filter( 'wc_get_template', [ $this, 'change_template_path' ], 10, 5 );
 		add_action( 'wp_enqueue_scripts', [ $this, 'add_assets_to_page' ] );
 		add_action( 'widgets_init', [ $this, 'init_widget' ] );
+
+		new Archive();
 	}
 
 	public function change_template_path( $template, $template_name, $args, $template_path, $default_path ): string {
