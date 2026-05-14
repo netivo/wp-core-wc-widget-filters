@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.2.1
+
+- Added availability filter query modification
+
 ## Version 1.2
 
 - Added support for a new alternate category function from Module
