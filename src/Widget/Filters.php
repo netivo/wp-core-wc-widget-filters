@@ -289,6 +289,7 @@ class Filters extends WP_Widget {
         }
 
         $categories = apply_filters( 'netivo/widget/filters/categories', $categories );
+        $parent_obj = apply_filters( 'netivo/widget/filters/parent', $parent_obj );
 
 		if ( ! empty( $categories ) ) {
 			wc_get_template( 'widget/filters-category.php', [ 'categories' => $categories, 'parent' => $parent_obj ] );
@@ -593,6 +594,7 @@ class Filters extends WP_Widget {
 		}
 
         $is_man = false;
+        $man_id = 0;
         if(apply_filters('netivo/widget/filters/alternate-tree', $this->is_alternate_category)){
             if ( is_product_category() ) {
                 $kpr = get_query_var('manufacturer');

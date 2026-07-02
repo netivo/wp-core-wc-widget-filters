@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.2.2
+
+- Added filter for the parent object in the category filter
+
 ## Version 1.2.1
 
 - Added availability filter query modification

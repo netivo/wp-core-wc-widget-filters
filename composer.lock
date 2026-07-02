@@ -1,0 +1,108 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "9e605f159553cb10a68e29e35429a793",
+    "packages": [
+        {
+            "name": "netivo/woocommerce",
+            "version": "1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/netivo/wp-core-woocommerce.git",
+                "reference": "ecc6e4b75f7da18970705a381404be5bb22242f8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/netivo/wp-core-woocommerce/zipball/ecc6e4b75f7da18970705a381404be5bb22242f8",
+                "reference": "ecc6e4b75f7da18970705a381404be5bb22242f8",
+                "shasum": ""
+            },
+            "require": {
+                "netivo/wp-core": "^1.1.1",
+                "php": ">=8.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Netivo\\WooCommerce\\": "src/"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "netivo",
+                    "email": "biuro@netivo.pl"
+                },
+                {
+                    "name": "Michał Świątek",
+                    "email": "michal.swiatek@netivo.pl"
+                }
+            ],
+            "description": "WP Core Library for Netivo themes to support WooCommerce",
+            "support": {
+                "source": "https://github.com/netivo/wp-core-woocommerce/tree/1.0.4",
+                "issues": "https://github.com/netivo/wp-core-woocommerce/issues"
+            },
+            "time": "2026-03-18T15:58:59+00:00"
+        },
+        {
+            "name": "netivo/wp-core",
+            "version": "1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/netivo/wp-core.git",
+                "reference": "6187fdae15362529ba13d24dd73af5f76a5e1df4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/netivo/wp-core/zipball/6187fdae15362529ba13d24dd73af5f76a5e1df4",
+                "reference": "6187fdae15362529ba13d24dd73af5f76a5e1df4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Netivo\\Core\\": "src/Core"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "netivo",
+                    "email": "biuro@netivo.pl"
+                },
+                {
+                    "name": "Michał Świątek",
+                    "email": "michal.swiatek@netivo.pl"
+                }
+            ],
+            "description": "WP Core Library for Netivo themes",
+            "support": {
+                "source": "https://github.com/netivo/wp-core/tree/v1.2",
+                "issues": "https://github.com/netivo/wp-core/issues"
+            },
+            "time": "2026-02-16T12:10:40+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {},
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=8.1"
+    },
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
+}
