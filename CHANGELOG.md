@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 1.2.3
+
+- Claude.md and agents support
+- Fixed the attribute filter for nested categories.
+
 ## Version 1.2.2
 
 - Added filter for the parent object in the category filter

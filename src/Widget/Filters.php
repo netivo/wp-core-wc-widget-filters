@@ -301,11 +301,8 @@ class Filters extends WP_Widget {
 
 		if ( is_product_category() ) {
 			$category = get_queried_object();
-			$filters  = ( array_key_exists( $category->term_id, $enabled_filters ) ) ? $enabled_filters[ $category->term_id ] : [];
-			if ( empty( $filters ) && $category->parent != 0 ) {
-				$filters = ( array_key_exists( $category->parent, $enabled_filters ) ) ? $enabled_filters[ $category->parent ] : [];
-			}
-			if ( empty( $filters ) && ! empty( $_GEt['s'] ) ) {
+			$filters = $this->get_term_filters($category, $enabled_filters);
+			if ( empty( $filters ) && ! empty( $_GET['s'] ) ) {
 				$filters = ( array_key_exists( 'search', $enabled_filters ) ) ? $enabled_filters['search'] : [];
 			}
 			$atr     = get_query_var( 'atr' );
@@ -577,6 +574,19 @@ class Filters extends WP_Widget {
 
             wc_get_template( 'widget/filters-price.php', [ 'options' => $options ] );
         }
+    }
+
+    protected function get_term_filters($term, $enabled_filters): array
+    {
+        $filters  = ( array_key_exists( $term->term_id, $enabled_filters ) ) ? $enabled_filters[ $term->term_id ] : [];
+        if( ! empty( $filters ) ) {
+            return $filters;
+        }
+        if ( $term->parent != 0 ) {
+            $parent = get_term($term->parent);
+            return $this->get_term_filters($parent, $enabled_filters);
+        }
+        return [];
     }
 
 	protected function get_filtered_term_product_counts( $term_ids, $taxonomy, $query_type ) {
