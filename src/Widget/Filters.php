@@ -355,6 +355,10 @@ class Filters extends WP_Widget {
 			'order'      => 'ASC',
 		] );
 
+		if ( is_wp_error( $terms ) || empty( $terms ) ) {
++			return null;
++		}
+
 		$term_counts = $this->get_filtered_term_product_counts( wp_list_pluck( $terms, 'term_id' ), $taxonomy, 'or' );
 
 		$_chosen_attributes = WC_Query::get_layered_nav_chosen_attributes();
