@@ -1,6 +1,7 @@
 import HiddenFilters from "./../hiddenFilters";
 import AttributeFilter from "./../attributeFilter";
 import LinkFilter from "./../linkFilter";
+import PriceFilter from "./../priceFilter";
 
 document.addEventListener("DOMContentLoaded", () => {
   let data_filters_hidden = document.querySelectorAll(
@@ -21,6 +22,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (link_filter.length > 0) {
     link_filter.forEach(filter => {
       new LinkFilter(filter);
+    });
+  }
+  let price_sliders = document.querySelectorAll('.js-price-slider');
+  if (price_sliders.length > 0) {
+    price_sliders.forEach(wrapper => {
+      new PriceFilter(wrapper);
     });
   }
 

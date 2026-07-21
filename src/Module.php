@@ -64,7 +64,7 @@ class Module {
 		} elseif ( $type === 'script' ) {
 			wp_enqueue_script( $handle, $nfile, array(), false, array(
 				'in_footer' => true,
-				'defer'     => true
+				'strategy'  => 'defer'
 			) );
 		}
 	}

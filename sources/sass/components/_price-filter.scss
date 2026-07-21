@@ -1,0 +1,157 @@
+@use './../variables/variables' as var;
+
+// ─── noUiSlider base – functional styles (required for correct rendering) ────
+
+.noUi-target,
+.noUi-target * {
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-user-select: none;
+  -ms-touch-action: none;
+  touch-action: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.noUi-target {
+  position: relative;
+}
+
+.noUi-base,
+.noUi-connects {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.noUi-connects {
+  overflow: hidden;
+  z-index: 0;
+}
+
+.noUi-connect,
+.noUi-origin {
+  will-change: transform;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  transform-origin: 0 0;
+  transform-style: flat;
+}
+
+.noUi-txt-dir-rtl.noUi-horizontal .noUi-origin {
+  left: 0;
+  right: auto;
+}
+
+.noUi-vertical .noUi-origin {
+  top: -100%;
+  width: 0;
+}
+
+.noUi-horizontal .noUi-origin {
+  height: 0;
+}
+
+.noUi-handle {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  position: absolute;
+}
+
+.noUi-touch-area {
+  height: 100%;
+  width: 100%;
+}
+
+.noUi-state-tap .noUi-connect,
+.noUi-state-tap .noUi-origin {
+  transition: transform 0.3s;
+}
+
+.noUi-state-drag * {
+  cursor: inherit !important;
+}
+
+.noUi-horizontal {
+  height: 4px;
+
+  .noUi-handle {
+    width: 18px;
+    height: 18px;
+    right: -9px;
+    top: -7px;
+  }
+}
+
+// ─── Theme visual overrides ──────────────────────────────────────────────────
+
+.netivo-filters__price {
+  padding: 0.5rem 0;
+
+  .netivo-filters__price-slider {
+    margin: 1.5rem 0.5rem 1rem;
+  }
+
+  .noUi-target {
+    background: #e0e0e0;
+    border-radius: 4px;
+    border: none;
+    box-shadow: none;
+  }
+
+  .noUi-connects {
+    border-radius: 4px;
+  }
+
+  .noUi-connect {
+    background: var.$color_primary;
+  }
+
+  .noUi-handle {
+    border-radius: 50%;
+    background: var.$color_primary;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+
+    &::before,
+    &::after {
+      display: none;
+    }
+  }
+
+  .noUi-active {
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+  }
+
+  .netivo-filters__price-values {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var.$color_black;
+  }
+
+  .netivo-filters__price-label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    white-space: nowrap;
+
+    span {
+      font-weight: 600;
+    }
+  }
+
+  .netivo-filters__price-sep {
+    color: #999;
+  }
+}

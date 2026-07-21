@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 1.3
+
+- Implemented price filter independent of jquery-ui
+- Fixed warning with defer script loading
+
 ## Version 1.2.3
 
 - Claude.md and agents support
